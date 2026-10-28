@@ -1,3 +1,7 @@
+---
+description: "Show for the sample storage desk."
+---
+
 # /show
 
 Read current data and report the result with sample codes and recorded dates. Do not fill missing facts from memory.

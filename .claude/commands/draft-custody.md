@@ -1,3 +1,7 @@
+---
+description: "Draft custody for the sample storage desk."
+---
+
 # /draft-custody
 
 Read current data and report the result with sample codes and recorded dates. Do not fill missing facts from memory.

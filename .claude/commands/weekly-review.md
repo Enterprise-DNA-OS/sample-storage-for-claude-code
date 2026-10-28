@@ -1,3 +1,7 @@
+---
+description: "Weekly review for the sample storage desk."
+---
+
 # /weekly-review
 
 Read current data and report the result with sample codes and recorded dates. Do not fill missing facts from memory.
