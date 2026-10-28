@@ -1,115 +1,124 @@
-<h1 align="center">Sample Storage for Claude Code</h1>
+# Sample Storage for Claude Code
 
-<p align="center">
-  <strong>The open-source sample storage desk that is just a database and Claude Code.</strong>
-</p>
+Know where each sample is, who borrowed it and what quantity remains. An owned database for nonclinical research material, freezer positions, returns, aliquot lineage and physical inventory checks. Built by Enterprise DNA.
 
-<p align="center">
-  Created by <a href="https://www.enterprisedna.co"><strong>Enterprise DNA</strong></a>. Free and open source. Works with Claude Code, Codex, OpenCode or Cursor.
-</p>
+| Do it yourself | We customise it | We run it for you |
+|---|---|---|
+| Free, MIT. Install the database and command recipes. | Your sample types, fields, storage rules and export mapping. A web front end or different stack if wanted. | Installed and operated through Omni by Enterprise DNA. One setup fee, then a retainer. |
 
-<!-- three-doors -->
-<table align="center">
-  <tr>
-    <td align="center"><strong>Do it yourself</strong><br/>Clone it, run it, own it. Free, MIT.<br/><a href="#quick-start">Quick start</a></td>
-    <td align="center"><strong>We customise it</strong><br/>Your fields, your rules, your LabKey Sample Manager data brought across.<br/><a href="https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=labkey-sample-manager">Book a call</a></td>
-    <td align="center"><strong>We run it for you</strong><br/>Installed, connected and operated inside Omni. Setup fee, then a retainer.<br/><a href="https://enterprisedna.co/omni/instead-of/labkey-sample-manager?utm_source=github&utm_medium=readme&utm_campaign=labkey-sample-manager">How it works</a></td>
-  </tr>
-</table>
+[Get your version built](https://enterprisedna.co/omni/book/?offer=replace-software&utm_source=github&utm_campaign=labkey-sample-manager)
 
-<p align="center">
-  <a href="#what-is-this">What is this</a> &bull;
-  <a href="#why-no-front-end">Why no front end</a> &bull;
-  <a href="#quick-start">Quick start</a> &bull;
-  <a href="#the-commands">Commands</a> &bull;
-  <a href="#instead-of-labkey-sample-manager">Instead of LabKey Sample Manager</a> &bull;
-  <a href="#want-it-installed-and-run-for-you">Installed for you</a> &bull;
-  <a href="#license">License</a>
-</p>
+## Start with the weekly work
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Node-20+-339933?style=flat-square" alt="Node 20+" />
-  <img src="https://img.shields.io/badge/PostgreSQL-any-336791?style=flat-square" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/PGlite-embedded-3ecf8e?style=flat-square" alt="PGlite" />
-  <img src="https://img.shields.io/badge/License-MIT-yellow?style=flat-square" alt="MIT License" />
-</p>
+Check overdue returns, reconcile freezer positions, review expiring material, inspect recorded storage conditions and prepare the week's inventory check. Borrowed samples reserve their positions. A hold blocks withdrawal and use. An aliquot subtracts its quantity from the parent in one transaction. A failed import rolls back the whole batch.
 
----
-
-## What is this
-
-Sample Storage for Claude Code does the job you pay LabKey Sample Manager for, as a Postgres database and a set of agent commands. There is no web front end. You open the folder in [Claude Code](https://claude.com/claude-code) (or Codex, OpenCode, Cursor: see `AGENTS.md`) and ask for what you want in plain language. It runs the right query, and it can answer questions the LabKey Sample Manager dashboard cannot.
-
-<!-- TODO(author): the annual bill. One sentence: what a 10 to 50 person business typically pays LabKey Sample Manager per year, all in, with a source. -->
-
-Want the same thing with a web front end, or built on a different stack? That is a customisation, and it is exactly what Enterprise DNA does: [book a call](https://enterprisedna.co/omni/book/?utm_source=github&utm_medium=readme&utm_campaign=labkey-sample-manager).
-
-<!-- TODO(author): two or three sentences on what this specific product covers and who it is for. -->
-
-## Why no front end
-
-- The front end was only ever there because the database was hard to talk to. That is no longer true.
-- Your data sits in plain Postgres tables you own. Any tool can read them. No export, no lock-in.
-- No seats, no tiers, no add-ons. Read [docs/why-no-front-end.md](docs/why-no-front-end.md) for the honest trade-offs too.
+LabKey publishes Sample Manager Professional at $13,140 annually including five users, checked 28 October 2026 on its [pricing page](https://www.labkey.com/pricing/). Its subscription includes services and hosting. This free storage desk is a bounded alternative for internal custody work, not the entire LabKey platform.
 
 ## Quick start
 
-Sixty seconds, no database install (an embedded Postgres runs inside Node):
+Node 20 or newer. Claude Code, Codex, OpenCode or Cursor. The CLI needs no paid model API.
 
 ```bash
-git clone https://github.com/Enterprise-DNA-OS/sample-storage-for-claude-code.git
-cd sample-storage-for-claude-code
 npm install
 npm run demo
+node scripts/storage.mjs returns-due
+node scripts/storage.mjs attention
+node scripts/storage.mjs insights
+npm run view
+npm run docs
+npm test
 ```
 
-Then open the folder in Claude Code and type a slash command. <!-- TODO(author): name the first command to try. -->
+The demo uses fictional algae, soil and seed records, including overdue returns and held material. For real work, choose a fresh DATA_DIR and run npm run migrate without seeding. DATABASE_URL selects a dedicated Postgres database; otherwise the local PGlite database lives under .data/db. Use one process at a time with PGlite.
 
-### Use it with your own Postgres or Supabase
+## Commands
 
-Copy `.env.example` to `.env`, set `DATABASE_URL`, then `npm run migrate`. Same commands, shared data, no per-seat fee.
+Prefix with node scripts/storage.mjs. All 32 commands support --json and have matching slash recipes. Partial UUIDs and case-insensitive exact names or codes resolve records; ambiguous matches list candidates and exit 1.
 
-## The commands
+- `help`
+- `storage`
+- `samples`
+- `storage-week`
+- `returns-due`
+- `expiry-review`
+- `stocktake`
+- `attention`
+- `compliance`
+- `insights`
+- `show`: sample.
+- `lineage`: sample.
+- `history`: sample.
+- `add-unit`: code, name, min, max, actor.
+- `add-box`: code, freezer, rows, columns, actor.
+- `add`: code, name, material, quantity, unit, owner, review-due, expires?, box, position, actor.
+- `checkout`: sample, borrower, due, note, actor.
+- `checkin`: sample, quantity, thaws, note, actor.
+- `move`: sample, box, position, note, actor.
+- `consume`: sample, quantity, note, actor.
+- `aliquot`: sample, code, name, quantity, box, position, note, actor.
+- `hold`: sample, note, actor.
+- `release-hold`: sample, note, actor.
+- `stocktake-record`: sample, quantity, unit, owner, review-due, expires?, box, position, note, actor.
+- `dispose`: sample, note, actor.
+- `log`: sample, note, actor.
+- `record-temperature`: freezer, temperature, at, note, actor.
+- `import`: vendor, file, type, source, map?, dry-run?, actor.
+- `export`: out.
+- `weekly-review`
+- `draft-picklist`: box.
+- `draft-custody`: sample.
 
-<!-- TODO(author): a table of the slash commands in .claude/commands and what each one does. -->
+Run help for arguments. Named options use --name=value; sample selectors are positional. Units are mL, uL, g, mg or count. No unit conversion is inferred. Count is always whole. Check-in records remaining quantity and an explicit number of thaw events. Stocktake corrects quantity only when the operator confirms the physical measurement.
 
-| Command | What it does |
-|---|---|
-| `/...` | ... |
+## Bring your sample register
 
-## Instead of LabKey Sample Manager
+Export one sample-type grid from LabKey as CSV, then preview and import with the same command. Names are qualified by the supplied sample type. Map customised columns explicitly.
 
-<!-- TODO(author): how to bring data across from LabKey Sample Manager; link docs/replace-labkey-sample-manager.md -->
-
-## Architecture
-
+```bash
+node scripts/storage.mjs import labkey examples/labkey.csv --type=Algae --source=demo --map=examples/column-map.json --actor=Storekeeper --dry-run
+node scripts/storage.mjs export --out=exports/storage.json
 ```
-sample-storage-for-claude-code/
-  CLAUDE.md                 how the operator wants this run (routing table + house rules)
-  AGENTS.md                 the same, for Codex / OpenCode / Cursor / Gemini CLI
-  .claude/commands/         the slash commands
-  scripts/                  the CLI the commands drive
-  scripts/lib/db.mjs        one adapter: DATABASE_URL (pg) or embedded PGlite
-  supabase/migrations/      plain SQL schema
-  supabase/seed.sql         demo data
-  docs/                     the thesis and the migration guide
-```
 
-## Built for coding agents
+Remove --dry-run after inspecting the preview. Imported records retain raw columns but start unverified, with no invented location or custody history. Reconcile every position and quantity before use. Identical rows are skipped; changed rows stop for reconciliation. This is a synthetic fixture, not a promise that every LabKey export has identical columns. [Switch guide](docs/replace-labkey-sample-manager.md).
 
-The database, CLI and command recipes work with Claude Code, Codex, OpenCode or Cursor. Ask your coding agent for a new command and have it implement and test the change against the same records.
+## Ten questions to ask
 
-## Contributing
+The insights command answers all ten from current records. These combine local operating rules and custody records. LabKey supports custom views too; this is not a claim that its platform cannot answer them.
 
-Issues and pull requests are welcome. Keep the shape: plain SQL, a small CLI, a slash command per recurring job, no front end.
+1. Which overdue returns also need an inventory review?
+2. Which held samples expire within a month?
+3. Which boxes have no spare positions?
+4. Which samples occupy storage with a stale or out-of-range reading?
+5. Which owners have overdue inventory reviews?
+6. Which imported records still need physical reconciliation?
+7. Which samples have three or more recorded thaw events?
+8. Which active samples have no expiry date recorded?
+9. Which aliquots have a parent on hold?
+10. Which borrowers hold the most overdue samples?
 
-## Want it installed and run for you?
+## Your first hour: ten things to ask for
 
-Enterprise DNA installs Sample Storage for Claude Code for your business, migrates your LabKey Sample Manager data, connects it to the rest of your tools, and runs it for you as part of **Omni**, our managed Command Center. One setup fee, then a monthly retainer.
+1. Set our business name, logo and colours in brand.json.
+2. Create our freezers with their local operating ranges.
+3. Define box sizes and position numbering.
+4. Preview an exported sample grid.
+5. Compare imported counts and raw fields.
+6. Record the physical location and quantity of each imported sample.
+7. Set responsible owners and next inventory review dates.
+8. Review overdue borrowers and held material.
+9. Render a stocktake sheet and custody record.
+10. Add our local review rule through /customise.
 
-- Book a call: [enterprisedna.co/omni/book](https://enterprisedna.co/omni/book/?offer=replace-software&utm_source=github&utm_medium=readme&utm_campaign=labkey-sample-manager)
-- Read more: [enterprisedna.co/omni/instead-of/labkey-sample-manager](https://enterprisedna.co/omni/instead-of/labkey-sample-manager?utm_source=github&utm_medium=readme&utm_campaign=labkey-sample-manager)
+## Documents and views
 
-## License
+Three dashboards show attention and returns, capacity and manual conditions, and inventory. Three document types produce a custody working record per sample, a stocktake sheet per box and a conditions review per freezer. brand.json controls the business name, logo and colours. Draft picklists and custody reviews remain in drafts. Nothing sends or publishes.
 
-MIT. Copyright (c) 2026 Enterprise DNA.
+## Boundaries
+
+This base is for nonclinical research material. No human specimens, patient records, diagnostics, automated disposal, regulated release, electronic signatures, CFR Part 11 validation or certification. [Checks and sources](docs/compliance.md) distinguish ISBER inventory guidance from local review policies. Manual readings are not live monitoring or alarms.
+
+There is no front end, mobile capture, scanner/printer integration, sensor control, attachment hosting or live LabKey connection. [Why no front end](docs/why-no-front-end.md). Shared use requires secured hosting, authenticated access, backups and a deployment review. Actor labels are not authenticated identities. Database owners can bypass application rules and alter history.
+
+Public database roles have no access by default. Exports and drafts contain source records: keep them private. JSON export is a data handover, not a tested disaster-recovery restore. Use native database backups. Generated files use restrictive permissions where supported; secure Windows folders separately.
+
+[Verification scope](docs/verification.md). MIT. Built by Enterprise DNA.

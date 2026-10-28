@@ -1,43 +1,54 @@
-# Sample Storage for Claude Code: operating instructions
+# Sample Storage for Claude Code
 
-This file is the brain. Claude Code reads it at the start of every session. It says who this is for, how work gets done, and the one right way to do each recurring job.
+For the storekeeper of nonclinical research material. The database holds storage positions, quantities, lineage and custody records. Read current records before every answer. Do not use this system for human specimens, clinical records, regulated release or medical decisions.
 
-## Who this is for
+## Recurring work
 
-- **Business:** [YOUR BUSINESS]
-- **Operator:** [YOUR NAME], [your role]
-- **What matters most:** [the one or two outcomes you care about]
+- /help: read .claude/commands/help.md.
+- /storage: read .claude/commands/storage.md.
+- /samples: read .claude/commands/samples.md.
+- /storage-week: read .claude/commands/storage-week.md.
+- /returns-due: read .claude/commands/returns-due.md.
+- /expiry-review: read .claude/commands/expiry-review.md.
+- /stocktake: read .claude/commands/stocktake.md.
+- /attention: read .claude/commands/attention.md.
+- /compliance: read .claude/commands/compliance.md.
+- /insights: read .claude/commands/insights.md.
+- /show: read .claude/commands/show.md.
+- /lineage: read .claude/commands/lineage.md.
+- /history: read .claude/commands/history.md.
+- /add-unit: read .claude/commands/add-unit.md.
+- /add-box: read .claude/commands/add-box.md.
+- /add: read .claude/commands/add.md.
+- /checkout: read .claude/commands/checkout.md.
+- /checkin: read .claude/commands/checkin.md.
+- /move: read .claude/commands/move.md.
+- /consume: read .claude/commands/consume.md.
+- /aliquot: read .claude/commands/aliquot.md.
+- /hold: read .claude/commands/hold.md.
+- /release-hold: read .claude/commands/release-hold.md.
+- /stocktake-record: read .claude/commands/stocktake-record.md.
+- /dispose: read .claude/commands/dispose.md.
+- /log: read .claude/commands/log.md.
+- /record-temperature: read .claude/commands/record-temperature.md.
+- /import: read .claude/commands/import.md.
+- /export: read .claude/commands/export.md.
+- /weekly-review: read .claude/commands/weekly-review.md.
+- /draft-picklist: read .claude/commands/draft-picklist.md.
+- /draft-custody: read .claude/commands/draft-custody.md.
+- /customise: add a tested field or local rule through a new migration.
+- /new-view: add a read-only branded report.
 
-Fill this in once. A worker with context knows. A worker without it guesses.
+## Rules
 
-## How to work
+- Run node scripts/storage.mjs help for current syntax. --json is supported everywhere.
+- Ask for an exact code when names are ambiguous. Never guess a quantity, location or actor.
+- Mutations record actor labels and before/after values. Labels are not verified identities.
+- Imports remain unverified until a physical stocktake is recorded. Never overwrite a changed import silently.
+- No email, external writes, instrument control, payments, public publishing or automatic disposal. Drafts stay in drafts.
+- Confirm the operator's request before recording disposal. Keep the record and history.
+- Separate demo and real DATA_DIR paths. Never run the seed against real business data.
+- Secrets stay in untracked environment files. No customer records in git.
+- npm test uses a fresh local data directory and ignores production DATABASE_URL.
 
-1. **Take a brief, not a script.** The operator describes the outcome. You run the right command and present the answer.
-2. **Read before you write.** Before drafting anything about a record, read its full history first.
-3. **Plain language.** Short sentences. No filler. Numbers in tables.
-4. **Silent success, loud problems.** No play-by-play. Say what broke and what you did about it.
-5. **Stop at the line.** Anything that sends, deletes, or faces a customer waits for a yes in this session.
-
-## Routing table: one right way for each recurring job
-
-| When the operator asks for... | Use this |
-|---|---|
-| <!-- TODO(author): one row per slash command --> | `/...` |
-
-If an ask fits nothing here, run the CLI directly (`npm run <cli> -- --help`) and then propose a new command for it.
-
-## Hard rules
-
-- Never send email or messages from here. Draft to `drafts/`, a person sends.
-- Never delete records without an explicit yes in this session. Prefer marking closed or archived.
-- Never invent a record. If a name is ambiguous, list the candidates and ask.
-- The database is the source of truth. If the answer is not in it, say so.
-
-## Where things live
-
-- `scripts/` the CLI. `scripts/lib/db.mjs` picks `DATABASE_URL` (Postgres, Supabase) or the embedded database in `.data/`.
-- `supabase/migrations/` the schema, plain SQL. `npm run migrate` applies it.
-- `.claude/commands/` the slash commands. Add one every time the same ask comes twice.
-- `docs/` the thesis and the guide for moving off LabKey Sample Manager.
-
-Built by Enterprise DNA. Installed and run for you as part of Omni: https://enterprisedna.co/omni/instead-of/labkey-sample-manager
+Use Claude Code, Codex, OpenCode or Cursor against the same command recipes. Built by Enterprise DNA.

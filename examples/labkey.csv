@@ -1,0 +1,3 @@
+Name,Description,Material,Amount,Units,Owner,ReviewDue,ExpiryDate,Parent,CustomProject
+EXT-01,"Kelp, reference",algae,8,mL,Mara,2027-12-01,2028-12-01,,Coastal
+EXT-02,Kelp aliquot,algae,2,mL,Mara,2027-12-01,2028-12-01,EXT-01,Coastal

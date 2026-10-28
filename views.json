@@ -1,13 +1,41 @@
 [
   {
     "name": "week",
-    "title": "This week",
-    "subtitle": "Sample Storage for Claude Code: what needs attention, rendered by npm run view",
+    "title": "Sample storage week",
+    "subtitle": "Nonclinical research material. Read-only working record.",
     "sections": [
       {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
+        "title": "Work requiring attention",
+        "sql": "select * from attention order by due nulls first,code"
+      },
+      {
+        "title": "Returns",
+        "sql": "select * from returns_due order by return_due"
+      }
+    ]
+  },
+  {
+    "name": "capacity",
+    "title": "Storage capacity",
+    "sections": [
+      {
+        "title": "Reserved positions",
+        "sql": "select box,freezer,capacity,reserved,available from storage_capacity order by box"
+      },
+      {
+        "title": "Recorded conditions",
+        "sql": "select code,min_c,max_c,temperature_c,observed_at,finding from storage_conditions order by code",
+        "note": "Manual observations. This is not an alarm or equipment controller."
+      }
+    ]
+  },
+  {
+    "name": "inventory",
+    "title": "Inventory reconciliation",
+    "sections": [
+      {
+        "title": "Physical count list",
+        "sql": "select code,name,box,position,quantity,unit,status,review_due from sample_inventory order by box,position,code"
       }
     ]
   }

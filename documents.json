@@ -1,11 +1,51 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
-    "file": "name",
+    "name": "custody-record",
+    "title": "Sample custody working record",
+    "for_each": "select id,code from samples order by code",
+    "file": "code",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      {
+        "title": "Current record",
+        "layout": "record",
+        "sql": "select code,name,material,quantity,unit,status,owner,box,position,held,expires from sample_inventory where id=$1"
+      },
+      {
+        "title": "Recorded changes",
+        "sql": "select action,actor,note,created_at from events where sample_id=$1 order by created_at,id",
+        "note": "Actor labels are operator-entered. This is not a certified chain-of-custody document."
+      }
+    ]
+  },
+  {
+    "name": "stocktake-sheet",
+    "title": "Physical inventory check sheet",
+    "for_each": "select id,code from boxes order by code",
+    "file": "code",
+    "sections": [
+      {
+        "title": "Storage positions",
+        "sql": "select code,name,position,quantity,unit,status,held from samples where box_id=$1 order by position",
+        "note": "Check the physical position and quantity. Record differences before relying on the inventory."
+      }
+    ]
+  },
+  {
+    "name": "conditions-review",
+    "title": "Storage conditions review",
+    "for_each": "select id,code from storage_units order by code",
+    "file": "code",
+    "sections": [
+      {
+        "title": "Local operating range",
+        "layout": "record",
+        "sql": "select code,name,min_c,max_c,finding from storage_conditions where id=$1"
+      },
+      {
+        "title": "Manual observation history",
+        "sql": "select observed_at,temperature_c,actor,note from observations where storage_unit_id=$1 order by observed_at desc",
+        "note": "No live sensor connection, cold-chain certification or automatic alert."
+      }
     ]
   }
 ]

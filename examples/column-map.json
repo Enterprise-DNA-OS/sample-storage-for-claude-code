@@ -1,0 +1,11 @@
+{
+  "name": "Name",
+  "description": "Description",
+  "material": "Material",
+  "quantity": "Amount",
+  "unit": "Units",
+  "owner": "Owner",
+  "review_due": "ReviewDue",
+  "expires": "ExpiryDate",
+  "parent": "Parent"
+}
